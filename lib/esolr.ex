@@ -1,0 +1,2 @@
+defmodule Esolr do
+end
