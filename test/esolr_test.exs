@@ -1,7 +1,10 @@
 defmodule EsolrTest do
-  use ExUnit.Case
 
-  test "the truth" do
-    assert 1 + 1 == 2
+  use ExSpec, async: true
+
+  describe "truth" do
+    it "should return true" do
+      true
+    end
   end
 end
