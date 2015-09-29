@@ -2,9 +2,11 @@ defmodule EsolrTest do
 
   use ExSpec, async: true
 
-  describe "truth" do
-    it "should return true" do
+  describe "query" do
+    it "should query Solr with the query string provided and return a result" do
       true
     end
   end
+
+  
 end

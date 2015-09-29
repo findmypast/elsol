@@ -5,6 +5,7 @@ defmodule Esolr.Mixfile do
     [app: :esolr,
      version: "0.0.1",
      elixir: "~> 1.0",
+     elixir_paths:  ["lib", "lib/esolr"],
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps]
@@ -32,7 +33,8 @@ defmodule Esolr.Mixfile do
       {:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.2"},
       {:httpotion, "~> 2.1.0"},
       { :figaro_elixir, "~> 1.0.0" },
-      { :yamerl, github: "yakaz/yamerl" }
+      { :yamerl, github: "yakaz/yamerl" },
+      {:httpoison, "~> 0.7.2"}
     ]
   end
 end
