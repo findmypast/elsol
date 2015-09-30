@@ -7,4 +7,9 @@ defmodule Esolr.Tester do
     Esolr.query(query_string)
   end
 
+
+  def run2 do
+    query_string = %Esolr{query_string: "cheese"}
+    Esolr.query(query_string)
+  end
 end
