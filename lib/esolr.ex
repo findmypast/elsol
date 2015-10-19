@@ -4,8 +4,9 @@ defmodule Esolr do
   use HTTPoison.Base
 
   defstruct url: "url", data_set: "testing", query_string: "", 
-    facets: [], facet_limit: 5,
-    wanted_fields: "", filters: [], start: 0, rows: 0, date: [], wt: "json"
+    facets: [], facet_limit: 5,  facet_range: [], facet_query: [],
+    wanted_fields: "", filters: [], start: 0, rows: 0, wt: "json",
+    echo_params: "none", highlight: nil, sort: nil
 
   # When we just want to pass through a whole url and query_string...(no construction of url required)
   def query(solr_query_url) when is_binary(solr_query_url) do
@@ -25,26 +26,33 @@ defmodule Esolr do
     reply = JSON.decode!(body)
   end
 
-  def create_query( query_struct) do
+  def create_query(query_struct) do
     query_request(query_struct) <>
     fields(query_struct) <>
     facets(query_struct) <>
     filter_queries(query_struct) <>
-    date(query_struct) <>
+    facet_range(query_struct) <>
+    facet_query(query_struct) <>
     start(query_struct) <>
     rows(query_struct) <>
-    wt(query_struct)
+    wt(query_struct) <>
+    highlight(query_struct) <>
+    sort(query_struct)
   end
 
-  def date(%Esolr{date: [date_label, date_start, date_end, gap]}) do
-    "&facet.date=#{date_label}" <>
-    "&f.#{date_label}.facet.range.start=#{date_start}" <>
-    "&f.#{date_label}.facet.range.end=#{date_end}" <>
-    "&f.#{date_label}.facet.range.gap=#{gap}"
+  def facet_range(%Esolr{facet_range: [range_field, range_start, range_end, gap]}) do
+    "&facet.range=#{range_field}" <>
+    "&f.#{range_field}.facet.range.start=#{range_start}" <>
+    "&f.#{range_field}.facet.range.end=#{range_end}" <>
+    "&f.#{range_field}.facet.range.gap=#{gap}"
   end
 
-  def date(%Esolr{date: []}) do
+  def facet_range(%Esolr{facet_range: [], facet_query: []}) do
     ""
+  end
+  
+  def facet_query(%Esolr{facet_query: facet_query}) do
+    "&facet.query=" <> Enum.join(facet_query,"&facet.query=") 
   end
 
   def query_request(%Esolr{query_string: query_string}) do
@@ -63,8 +71,8 @@ defmodule Esolr do
     ""
   end
 
-  def fields(%Esolr{wanted_fields: wanted_fields}) do
-    "&fl=#{wanted_fields}"
+  def fields(%Esolr{wanted_fields: wanted_fields, echo_params: echo_params}) do
+    "&fl=#{wanted_fields}&echoParams=#{echo_params}"
   end
 
   def filter_queries(%Esolr{filters: []}) do
@@ -86,6 +94,21 @@ defmodule Esolr do
   def wt(%Esolr{wt: wtype}) do
     "&wt=#{wtype}"
   end
-
-
+  
+  def highlight(%Esolr{highlight: nil }) do
+     ""
+  end
+  
+  def highlight(%Esolr{highlight: highlight_field }) do
+    "&hl=true&hl.fl=#{highlight_field}&hl.fragsize=250&hl.requireFieldMatch=false&hl.tag.pre=%5bb%5d&hl.tag.post=%5b%2fb%5d&hl.useFastVectorHighlighter=true"
+  end
+  
+  def sort(%Esolr{sort: nil }) do
+     ""
+  end
+  
+  def sort(%Esolr{sort: sort }) do
+    "&sort=#{sort}"
+  end
+  
 end
