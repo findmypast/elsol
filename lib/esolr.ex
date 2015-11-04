@@ -10,12 +10,12 @@ defmodule Esolr do
 
   # When we just want to pass through a whole url and query_string...(no construction of url required)
   def query(solr_query_url) when is_binary(solr_query_url) do
-    get(solr_query_url)
+    get(solr_query_url, [],[recv_timeout: 30000])
   end
 
   def query(query_struct) do
     solr_query_url = build_url_with_query(query_struct)
-    get(solr_query_url)
+    get(solr_query_url, [],[recv_timeout: 30000])
   end
 
   def build_url_with_query(query_struct) do
