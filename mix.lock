@@ -1,0 +1,10 @@
+%{"ex_spec": {:hex, :ex_spec, "0.3.0"},
+  "figaro_elixir": {:hex, :figaro_elixir, "1.0.0"},
+  "hackney": {:hex, :hackney, "1.3.2"},
+  "httpoison": {:hex, :httpoison, "0.7.4"},
+  "httpotion": {:hex, :httpotion, "2.1.0"},
+  "ibrowse": {:git, "git://github.com/cmullaparthi/ibrowse.git", "ea3305d21f37eced4fac290f64b068e56df7de80", [tag: "v4.1.2"]},
+  "idna": {:hex, :idna, "1.0.2"},
+  "jazz": {:hex, :jazz, "0.2.1"},
+  "ssl_verify_hostname": {:hex, :ssl_verify_hostname, "1.0.5"},
+  "yamerl": {:git, "git://github.com/yakaz/yamerl.git", "ae810a808817d9482b4628ae3e20d746e3729fe0", []}}

@@ -1,11 +1,11 @@
-defmodule Esolr.Mixfile do
+defmodule Elsol.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :esolr,
+    [app: :elsol,
      version: "0.0.1",
      elixir: "~> 1.0",
-     elixir_paths:  ["lib", "lib/esolr"],
+     elixir_paths:  ["lib", "lib/elsol"],
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps]

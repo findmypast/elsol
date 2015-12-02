@@ -1,4 +1,4 @@
-defmodule EsolrTest do
+defmodule ElsolTest do
 
   use ExSpec, async: true
 

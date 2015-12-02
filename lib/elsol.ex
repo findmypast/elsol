@@ -1,4 +1,4 @@
-defmodule Esolr do
+defmodule Elsol do
 
   use Jazz
   use HTTPoison.Base
@@ -40,74 +40,74 @@ defmodule Esolr do
     sort(query_struct)
   end
 
-  def facet_range(%Esolr{facet_range: [range_field, range_start, range_end, gap]}) do
+  def facet_range(%Elsol{facet_range: [range_field, range_start, range_end, gap]}) do
     "&facet.range=#{range_field}" <>
     "&f.#{range_field}.facet.range.start=#{range_start}" <>
     "&f.#{range_field}.facet.range.end=#{range_end}" <>
     "&f.#{range_field}.facet.range.gap=#{gap}"
   end
 
-  def facet_range(%Esolr{facet_range: [], facet_query: []}) do
+  def facet_range(%Elsol{facet_range: [], facet_query: []}) do
     ""
   end
   
-  def facet_query(%Esolr{facet_query: facet_query}) do
+  def facet_query(%Elsol{facet_query: facet_query}) do
     "&facet.query=" <> Enum.join(facet_query,"&facet.query=") 
   end
 
-  def query_request(%Esolr{query_string: query_string}) do
+  def query_request(%Elsol{query_string: query_string}) do
     "q=#{query_string}"
   end
 
-  def facets(%Esolr{facets: []}) do
+  def facets(%Elsol{facets: []}) do
     ""
   end
 
-  def facets(%Esolr{facets: fields, facet_limit: facet_limit}) do
+  def facets(%Elsol{facets: fields, facet_limit: facet_limit}) do
     "&facet=true&facet.limit=#{facet_limit}&facet.field=" <> Enum.join(fields,"&facet.field=")
   end
 
-  def fields(%Esolr{wanted_fields: ""}) do
+  def fields(%Elsol{wanted_fields: ""}) do
     ""
   end
 
-  def fields(%Esolr{wanted_fields: wanted_fields, echo_params: echo_params}) do
+  def fields(%Elsol{wanted_fields: wanted_fields, echo_params: echo_params}) do
     "&fl=#{wanted_fields}&echoParams=#{echo_params}"
   end
 
-  def filter_queries(%Esolr{filters: []}) do
+  def filter_queries(%Elsol{filters: []}) do
     ""
   end
 
-  def filter_queries(%Esolr{filters: filters}) do
+  def filter_queries(%Elsol{filters: filters}) do
     "&fq=" <> Enum.join(filters,"&fq=")
   end
 
-  def start(%Esolr{start: startnum}) do
+  def start(%Elsol{start: startnum}) do
     "&start=#{startnum}"
   end
 
-  def rows(%Esolr{rows: rowcount}) do
+  def rows(%Elsol{rows: rowcount}) do
     "&rows=#{rowcount}"
   end
 
-  def wt(%Esolr{wt: wtype}) do
+  def wt(%Elsol{wt: wtype}) do
     "&wt=#{wtype}"
   end
   
-  def highlight(%Esolr{highlight: nil }) do
+  def highlight(%Elsol{highlight: nil }) do
      ""
   end
   
-  def highlight(%Esolr{highlight: highlight_field }) do
+  def highlight(%Elsol{highlight: highlight_field }) do
     "&hl=true&hl.fl=#{highlight_field}&hl.fragsize=250&hl.requireFieldMatch=false&hl.tag.pre=%5bb%5d&hl.tag.post=%5b%2fb%5d&hl.useFastVectorHighlighter=true"
   end
   
-  def sort(%Esolr{sort: nil }) do
+  def sort(%Elsol{sort: nil }) do
      ""
   end
   
-  def sort(%Esolr{sort: sort }) do
+  def sort(%Elsol{sort: sort }) do
     "&sort=#{sort}"
   end
   
