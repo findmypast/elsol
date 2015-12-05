@@ -15,7 +15,7 @@ defmodule Elsol.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :figaro_elixir]]
+    [applications: [:logger, :httpoison]]
   end
 
   # Dependencies can be Hex packages:
@@ -32,8 +32,6 @@ defmodule Elsol.Mixfile do
       {:jazz, "~> 0.2.1"},
       {:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.2"},
       {:httpotion, "~> 2.1.0"},
-      { :figaro_elixir, "~> 1.0.0" },
-      { :yamerl, github: "yakaz/yamerl" },
       {:httpoison, "~> 0.7.2"}
     ]
   end

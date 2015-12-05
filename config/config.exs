@@ -22,3 +22,6 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+
+config :elsol,
+  url: "http://localhost:8983/solr"
