@@ -29,10 +29,8 @@ defmodule Elsol.Mixfile do
   # Type `mix help deps` for more examples and options
   defp deps do
     [ {:ex_spec, "~> 0.3.0", only: :test},
-      {:jazz, "~> 0.2.1"},
-      {:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.2"},
-      {:httpotion, "~> 2.1.0"},
-      {:httpoison, "~> 0.7.2"}
+      {:httpoison, "~> 0.8.0"},
+      {:poison, "~> 1.3"}
     ]
   end
 end

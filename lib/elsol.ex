@@ -1,6 +1,5 @@
 defmodule Elsol do
 
-  use Jazz
   use HTTPoison.Base
 
   # When we just want to pass through a whole url and query_string...(no construction of url required)
@@ -29,7 +28,6 @@ defmodule Elsol do
   ... iex doctests to do
 
   """
-
   def build_query(%{url: nil} = query_struct) do
     Application.get_env(:elsol, :url) <> Elsol.Query.build(query_struct)
   end
@@ -42,8 +40,15 @@ defmodule Elsol do
     Application.get_env(:elsol, String.to_atom config_key) <> Elsol.Query.build(query_struct)
   end
 
+  # decode JSON data for now
+  def process_response_body("{\"responseHeader\":{" <> body) do
+    Poison.decode! "{\"responseHeader\":{" <> body
+  end
+
+  # to fix: decode other types of Solr data, returns iodata for now
+  # https://cwiki.apache.org/confluence/display/solr/Response+Writers
   def process_response_body(body) do
-    reply = JSON.decode!(body)
+    body
   end
 
 end
