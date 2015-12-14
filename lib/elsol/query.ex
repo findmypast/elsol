@@ -33,7 +33,7 @@ defmodule Elsol.Query do
                                      hl_requireFieldMatch: nil, hl_tag_pre: nil,
                                      hl_tag_post: nil, hl_useFastVectorHighlighter: nil
 
-  defmodule Suggest, do: defstruct url: nil, name: "/suggest", suggest: true, suggest_dictionary: nil, suggest_q: nil,
+  defmodule Suggest, do: defstruct url: nil, name: "/suggest", suggest: true, suggest_dictionary: [], suggest_q: nil,
                                    suggest_build: nil, suggest_count: nil
 
   def build(params) when is_map(params) do
