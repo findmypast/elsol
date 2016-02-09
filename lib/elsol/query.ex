@@ -25,7 +25,7 @@ defmodule Elsol.Query do
 
   defstruct url: nil, name: "/select", q: nil, fq: nil, start: nil, rows: nil, wt: nil, sort: nil, echoParams: nil, fl: nil
 
-  defmodule Facet, do: defstruct facet: true, facet_field: [], facet_query: [],
+  defmodule Facet, do: defstruct facet: true, facet_field: [], facet_query: [], facet_pivot: [],
                                  facet_range: nil, facet_range_start: nil, facet_range_end: nil, facet_range_gap: nil,
                                  facet_limit: nil, facet_mincount: nil, facet_sort: nil
 
@@ -42,6 +42,8 @@ defmodule Elsol.Query do
                                  terms_maxcount: nil, terms_prefix: nil, terms_raw: nil,
                                  terms_regex: nil, terms_regex_flag: nil, terms_sort: nil,
                                  terms_upper: nil, terms_upper_incl: nil
+
+  defmodule Stats, do: defstruct stats: true, stats_field: [], stats_calcdistinct: nil
 
   def build(params) when is_map(params) do
     cond do
