@@ -12,6 +12,11 @@ defmodule Elsol do
     get(solr_query_url, [],[recv_timeout: 30000])
   end
 
+  def query!(query_struct) do
+    solr_query_url = build_query(query_struct)
+    get!(solr_query_url, [],[recv_timeout: 30000])
+  end
+
   @doc """
   Build solr query with `%Elsol.Query{}` structs. See `Elsol.Query` for more details.
 
