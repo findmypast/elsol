@@ -9,6 +9,35 @@ defmodule Elsol do
   def query!(query_struct), do: get! build_query(query_struct), [], [recv_timeout: 30000]
 
   @doc """
+  Send a list of solr_docs to an update handler using `%Elsol.Query{}` struct,
+  e.g. `Elsol.update(%Elsol.Query{url: config_key, name: "/update"})`. See `build_query`
+  for more details.
+
+  solr_docs can be:
+    - a List of field-value documents (in Map)
+    - encoded JSON field-value array string
+    - see `https://wiki.apache.org/solr/UpdateJSON`
+
+  Other formats such as CVS, XML update messages are currently not supported.
+  Raw 'add doc' update messages and other update commands such as 'delete', 'commit'
+  can currently only be issued via encoded JSON string as part of `solr_docs`.
+
+  """
+  def update(struct, docs) when is_list(docs) and is_map(hd docs) do
+    { status, json_docs } = Poison.encode docs
+    cond do
+      status == :ok -> HTTPoison.post build_query(struct), json_docs, [{"Content-type", "application/json"}]
+      true -> {:error, "Unable to parse solr documents"}
+    end
+  end
+
+  def update(struct, docs) when is_binary(docs) do
+    HTTPoison.post build_query(struct), docs, [{"Content-type", "application/json"}]
+  end
+
+  def update(_struct, _docs), do: {:error, "Unknown solr documents"}
+
+  @doc """
   Build solr query with `%Elsol.Query{}` structs. See `Elsol.Query` for more details.
 
   Configuring endpoints:
