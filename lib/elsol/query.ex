@@ -45,6 +45,9 @@ defmodule Elsol.Query do
 
   defmodule Stats, do: defstruct stats: true, stats_field: [], stats_calcdistinct: nil
 
+  defmodule Update, do: defstruct url: nil, name: "/update", commit: nil, optimize: nil, waitFlush: nil, waitSearcher: nil,
+                                  expungeDeletes: nil, maxSegments: nil, rollback: nil
+
   def build(params) when is_map(params) do
     cond do
       Map.has_key?(params, :name) -> params.name <> "?" <> build( Map.delete(params, :url) |> Map.delete(:name) |> Map.to_list )

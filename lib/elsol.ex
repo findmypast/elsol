@@ -9,8 +9,8 @@ defmodule Elsol do
   def query!(query_struct), do: get! build_query(query_struct), [], [recv_timeout: 30000]
 
   @doc """
-  Send a list of solr_docs to an update handler using `%Elsol.Query{}` struct,
-  e.g. `Elsol.update(%Elsol.Query{url: config_key, name: "/update"})`. See `build_query`
+  Send a list of solr_docs to an update handler using `%Elsol.Query.Update{}` struct,
+  e.g. `Elsol.update(%Elsol.Query.Update{url: config_key, name: "/update"})`. See `build_query`
   for more details.
 
   solr_docs can be:
@@ -18,9 +18,15 @@ defmodule Elsol do
     - encoded JSON field-value array string
     - see `https://wiki.apache.org/solr/UpdateJSON`
 
-  Other formats such as CVS, XML update messages are currently not supported.
-  Raw 'add doc' update messages and other update commands such as 'delete', 'commit'
-  can currently only be issued via encoded JSON string as part of `solr_docs`.
+  Other update message formats such as CSV, XML are currently not supported.
+
+  Raw 'add doc' update messages (atomic updates), and other update commands
+  such as 'delete', 'commit' can also be issued as part of the encoded
+  JSON string (`solr_docs`) for JSON update handler.
+
+  Direct update commands can also be issued using the `%Elsol.Query.Update{}` struct:
+    - `Elsol.update(%Elsol.Query.Update{url: config_key, commit: "true", expungeDeletes: "true"})`
+    - `Elsol.update(%Elsol.Query.Update{url: config_key, optimize: "true", maxSegments: 10})`
 
   """
   def update(struct, docs) when is_list(docs) and is_map(hd docs) do
@@ -36,6 +42,10 @@ defmodule Elsol do
   end
 
   def update(_struct, _docs), do: {:error, "Unknown solr documents"}
+
+  # For direct update commands without solr_docs such as commit, optimize
+  def update(struct), do: get build_query(struct), [], [recv_timeout: 30000]
+  def update!(struct), do: get! build_query(struct), [], [recv_timeout: 30000]
 
   @doc """
   Build solr query with `%Elsol.Query{}` structs. See `Elsol.Query` for more details.
