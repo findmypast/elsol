@@ -25,9 +25,10 @@ defmodule Elsol.Query do
 
   defstruct url: nil, name: "/select", q: nil, fq: nil, start: nil, rows: nil, wt: nil, sort: nil, echoParams: nil, fl: nil
 
-  defmodule Facet, do: defstruct facet: true, facet_field: [], facet_query: [], facet_pivot: [],
+  defmodule Facet, do: defstruct facet: true, facet_field: [], facet_query: [], facet_pivot: [], facet_prefix: nil,
                                  facet_range: nil, facet_range_start: nil, facet_range_end: nil, facet_range_gap: nil,
-                                 facet_limit: nil, facet_mincount: nil, facet_sort: nil
+                                 facet_limit: nil, facet_offset: nil, facet_mincount: nil, facet_sort: nil,
+                                 facet_missing: nil, facet_method: nil, facet_enum_cache_minDf: nil, facet_threads: nil
 
   defmodule Highlight, do: defstruct hl: true, hl_fl: nil, hl_fragsize: nil,
                                      hl_requireFieldMatch: nil, hl_tag_pre: nil,
