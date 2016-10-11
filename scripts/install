@@ -1,0 +1,4 @@
+#!/bin/bash -e
+
+mix hex.info
+mix deps.get
