@@ -3,7 +3,7 @@ defmodule Elsol.Mixfile do
 
   def project do
     [app: :elsol,
-     version: "0.0.1",
+     version: "0.0.2",
      elixir: "~> 1.0",
      elixir_paths:  ["lib", "lib/elsol"],
      build_embedded: Mix.env == :prod,
