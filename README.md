@@ -1,6 +1,8 @@
 Elsol
 =====
 
+Elsol is a Solr library for Elixir.
+
 ## Getting Started
 This project requires having Elixir installed.
 
@@ -11,7 +13,7 @@ brew install elixir
 ```
 
 Otherwise, you can 
-[follow the installation instructions on elixir-lang.org)[http://elixir-lang.org/install.html]
+[follow the installation instructions on elixir-lang.org](http://elixir-lang.org/install.html)
 
 ### Convenience Scripts
 
@@ -34,3 +36,9 @@ To interact with the code from a shell:
 ```bash
 ./scripts/console
 ```
+
+### Tests
+
+Elsol uses [ESpec](https://github.com/antonmi/espec) for tests. 
+ESpec is a framework very much like RSpec, and seems to be thoroughly 
+tested and relatively mature.
