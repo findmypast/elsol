@@ -23,7 +23,8 @@ defmodule Elsol.Query do
 
   """
 
-  defstruct url: nil, name: "/select", q: nil, fq: nil, start: nil, rows: nil, wt: nil, sort: nil, echoParams: nil, fl: nil
+  defstruct url: nil, name: "/select", q: nil, fq: nil, start: nil, rows: nil,
+            wt: "json", sort: nil, echoParams: nil, fl: nil, collection: %Elsol.Collection{}
 
   defmodule Facet, do: defstruct facet: true, facet_field: [], facet_query: [], facet_pivot: [], facet_prefix: nil,
                                  facet_range: nil, facet_range_start: nil, facet_range_end: nil, facet_range_gap: nil,
@@ -51,7 +52,11 @@ defmodule Elsol.Query do
 
   def build(params) when is_map(params) do
     cond do
-      Map.has_key?(params, :name) -> params.name <> "?" <> build( Map.delete(params, :url) |> Map.delete(:name) |> Map.to_list )
+      Map.has_key?(params, :name) ->
+        Elsol.Collection.path(params.collection) # this can be an empty string or /collection_name
+        <> params.name
+        <> "?"
+        <> build( Map.drop(params, [:url, :name, :collection]) |> Map.to_list )  # query params
       true -> build( Map.to_list(params) )
     end
   end
@@ -73,6 +78,6 @@ defmodule Elsol.Query do
   def build({:__struct__, _}), do: ""
   def build({_, nil}), do: ""
   def build({_,[]}), do: ""
-  def build([]), do: "" 
+  def build([]), do: ""
 
 end
