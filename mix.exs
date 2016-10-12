@@ -6,6 +6,8 @@ defmodule Elsol.Mixfile do
      version: "0.0.2",
      elixir: "~> 1.0",
      elixir_paths:  ["lib", "lib/elsol"],
+     spec_paths: ["spec"],
+     spec_pattern: "*_spec.exs",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps]
@@ -28,7 +30,7 @@ defmodule Elsol.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [ {:ex_spec, "~> 0.3.0", only: :test},
+    [ {:espec, "~> 1.1.0", only: :test},
       {:httpoison, "~> 0.8.0"},
       {:poison, "~> 1.3"}
     ]
