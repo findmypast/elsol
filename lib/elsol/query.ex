@@ -8,6 +8,9 @@ defmodule Elsol.Query do
     For sub-parameters (dotted) such as `facet.count`, `facet.range.gap`, substitute `.` 
     with `_` in field keys (atoms), e.g. `facet_count`, `facet_range_gap`.
 
+    Note that because of the nature of how Elixir handles maps and lists,
+    query params will naturally be rendered in alphabetical order.
+
     Most Solr params are optional (nil) and shall not be rendered unless a value is given.
     Change `name: "/select"` for other custom request handlers.
 
@@ -25,30 +28,6 @@ defmodule Elsol.Query do
 
   defstruct url: nil, name: "/select", q: nil, fq: nil, start: nil, rows: nil,
             wt: "json", sort: nil, echoParams: nil, fl: nil, collection: %Elsol.Collection{}
-
-  defmodule Facet, do: defstruct facet: true, facet_field: [], facet_query: [], facet_pivot: [], facet_prefix: nil,
-                                 facet_range: nil, facet_range_start: nil, facet_range_end: nil, facet_range_gap: nil,
-                                 facet_limit: nil, facet_offset: nil, facet_mincount: nil, facet_sort: nil,
-                                 facet_missing: nil, facet_method: nil, facet_enum_cache_minDf: nil, facet_threads: nil
-
-  defmodule Highlight, do: defstruct hl: true, hl_fl: nil, hl_fragsize: nil,
-                                     hl_requireFieldMatch: nil, hl_tag_pre: nil,
-                                     hl_tag_post: nil, hl_useFastVectorHighlighter: nil
-
-  defmodule Suggest, do: defstruct url: nil, name: "/suggest", suggest: true, suggest_dictionary: [], suggest_q: nil,
-                                   suggest_build: nil, suggest_count: nil, suggest_cfq: nil, suggest_build: nil,
-                                   suggest_reload: nil, suggest_buildAll: nil, suggest_reloadAll: nil
-
-  defmodule Terms, do: defstruct url: nil, name: "/terms", terms: true,  terms_fl: nil,
-                                 terms_limit: nil, terms_lower: nil, terms_lower_incl: nil, terms_mincount: nil,
-                                 terms_maxcount: nil, terms_prefix: nil, terms_raw: nil,
-                                 terms_regex: nil, terms_regex_flag: nil, terms_sort: nil,
-                                 terms_upper: nil, terms_upper_incl: nil
-
-  defmodule Stats, do: defstruct stats: true, stats_field: [], stats_calcdistinct: nil
-
-  defmodule Update, do: defstruct url: nil, name: "/update", commit: nil, optimize: nil, waitFlush: nil, waitSearcher: nil,
-                                  expungeDeletes: nil, maxSegments: nil, rollback: nil
 
   def build(params) when is_map(params) do
     cond do

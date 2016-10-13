@@ -66,6 +66,23 @@ defmodule ElsolSpec.CollectionSpec do
         let :path_arg, do: collection_string()
         it_behaves_like SharedPathSuccessForString
       end
+      
+      context "with nil as an argument" do
+        let :path_arg, do: nil
+        it_behaves_like SharedPathFailure
+      end
+      
+      context "with an arbitrary struct" do
+        context "if the key :collection exists" do
+          let :collection, do: %Elsol.Collection{name: collection_name()}
+          let :path_arg, do: %{collection: collection()}
+          it_behaves_like SharedPathSuccess
+        end
+        context "if the key :name exists" do
+          let :path_arg, do: %{name: "/" <> collection_name()}
+          it_behaves_like SharedPathSuccess
+        end
+      end
 
     end
   end

@@ -34,7 +34,7 @@ defmodule Elsol.Collection do
     cond do
       is_bitstring(params) -> params
       is_nil(params) -> ""
-      is_map(params) -> 
+      is_map(params) ->
         cond do
           Map.has_key?(params, :collection) -> path(params.collection)
           Map.has_key?(params, :name) -> path(params.name)
