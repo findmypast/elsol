@@ -63,26 +63,26 @@ defmodule ElsolSpec.QuerySpec do
       end
       context "with a key-value tuple" do
         context "if the tuple has a string value" do
-          let :param, do: %{sort: "name asc"}
-          it "should turn the tuple into a query param grouping" do
-            should eq "sort=name asc"
+          let :param, do: {:sort, "name asc"}
+          it "should turn the tuple into a query param grouping, adding an &" do
+            should eq "sort=name asc&"
           end
         end
         context "if the tuple has a boolean value" do
-          let :param, do: %{facet: true}
-          it "should cast the boolean value to a string" do
-            should eq "facet=true"
+          let :param, do: {:facet, true}
+          it "should cast the boolean value to a string, adding an &" do
+            should eq "facet=true&"
           end
         end
         context "if the value has a list" do
           context "if the list is not empty" do
-            let :param, do: %{fl: ["name", "id"]}
-            it "should compose key-value pairs for each field" do
-              should eq "fl=name&fl=id"
+            let :param, do: {:fl, ["name", "id"]}
+            it "should compose key-value pairs for each field, adding an &" do
+              should eq "fl=name&fl=id&"
             end
           end
           context "if the list is empty" do
-            let :param, do: %{fl: []}
+            let :param, do: {:fl, []}
             it "should be an empty string" do
               should eq ""
             end
@@ -90,7 +90,7 @@ defmodule ElsolSpec.QuerySpec do
         end
         
         context "if the value is nil" do
-          let :param, do: %{fl: nil}
+          let :param, do: {:fl, nil}
           it "should be an empty string" do
             should eq ""
           end
@@ -98,13 +98,21 @@ defmodule ElsolSpec.QuerySpec do
       end
       context "with a list" do
         context "if the list is a size of two or more" do
-          
+          # note that the list is not ordered by key
+          let :param, do: [{:q, "*:*"}, {:fl, ["name", "id"]}]
+          it "should process each list item in order" do
+            should eq "q=*:*&fl=name&fl=id"
+          end
         end
         context "if the list is a size of 1" do
-          
+          let :param, do: [{:q, "*:*"}]
+          it "should process the list item" do
+            should eq "q=*:*"
+          end
         end
         context "if the list is empty" do
-          
+          let :param, do: []
+          it do: should eq ""
         end
       end
     end
