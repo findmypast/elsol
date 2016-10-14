@@ -36,14 +36,39 @@ defmodule ElsolSpec do
     end
   end
   
-#  defmodule SharedUpdateExample do
-#
-#    use ESpec, shared: true
-#    let_overridable [:method, :request_method]
-#
-#    subject do: apply(Elsol, method(), args())
-#
-#  end
+  defmodule SharedUpdateExample do
+
+    use ESpec, shared: true
+    let_overridable [:method, :request_method, :struct]
+
+    before do
+      allow Elsol |> to(accept request_method(), fn(_,_,_) -> "retval" end)
+    end
+
+
+    subject do: apply(Elsol, method(), args())
+
+    context "with docs" do
+      context "doc list" do
+        context "head of list is map" do
+          let :args, do: [[%{id: "1", name: "foo"}, %{id: 2, name: "bar"}]]
+          it "should post "
+        end
+        context "head of list is wrong type" do
+          # unable to parse solr documents
+        end
+      end
+      context "doc string" do
+        let :args, do: ["[{\"id\": \"1\", \"name\": \"foo\"}]"]
+      end
+    end
+
+    context "without docs" do
+
+    end
+
+
+  end
 
   example_group do
     describe "query" do
@@ -57,21 +82,22 @@ defmodule ElsolSpec do
       let :request_method, do: :get!
       it_behaves_like SharedQueryExample
     end
-#
-#    describe "update" do
-#
-#      let :struct, do: %Elsol.Query.Update{commit: true, collection: %Elsol.Collection{name: "foo"}}
-#
-#      context "with docs" do
-#
-#      end
-#
-#      context "without docs" do
-#
-#      end
-#
-#    end
+
+    describe "update" do
+      let :method, do: :update
+      let :request_method, do: :post
+      let :struct, do: %Elsol.Query.Update{commit: true, collection: %Elsol.Collection{name: "foo"}}
+
+      it_behaves_like SharedUpdateExample
+    end
     
+    describe "update!" do
+      let :method, do: :update!
+      let :request_method, do: :post!
+      let :struct, do: %Elsol.Query.Update{commit: true, collection: %Elsol.Collection{name: "foo"}}
+
+      it_behaves_like SharedUpdateExample
+    end
     
   end
 end
