@@ -39,21 +39,36 @@ defmodule Elsol do
     - `Elsol.update(%Elsol.Query.Update{url: config_key, optimize: "true", maxSegments: 10})`
 
   """
-  def update(struct, docs) when is_list(docs) and is_map(hd docs) do
-    { status, json_docs } = Poison.encode docs
+  
+  def update(struct, docs \\ [], bang \\ false) do
+
+    method = cond do
+      is_list(docs) and is_nil(first(docs)) -> cond do
+          bang -> :get!
+          !bang -> :get
+        end
+      bang -> :post!
+      true -> :post
+    end
+
+    {status, json_documents} = _decoded(docs)
+
     cond do
-      status == :ok -> post build_query(struct), json_docs, [{"Content-type", "application/json"}]
-      true -> {:error, "Unable to parse solr documents"}
+      status == :ok -> apply(__MODULE__, method, [build_query(struct), json_docs, [{"Content-type", "application/json"}]])
+      true -> {status, json_documents}
     end
   end
   
-  
-
-  def update(struct, docs) when is_binary(docs) do
-    post build_query(struct), docs, [{"Content-type", "application/json"}]
+  def _decoded(docs) do
+    cond do
+      is_list(docs) and is_map(hd docs) -> Poison.encode docs
+      is_binary(docs) -> {:ok, docs}
+      true -> {:error, "Unknown solr documents"}
+    end
   end
 
-  def update(_struct, _docs), do: {:error, "Unknown solr documents"}
+  def update(struct, docs), do: _update(struct, docs, false)
+  def update!(struct, docs), do: _update(struct, docs, true)
 
   # For direct update commands without solr_docs such as commit, optimize
   def update(struct), do: get build_query(struct), [], [recv_timeout: 30000]
