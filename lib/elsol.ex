@@ -40,39 +40,32 @@ defmodule Elsol do
 
   """
   
-  def update(struct, docs \\ [], bang \\ false) do
-
-    method = cond do
-      is_list(docs) and is_nil(first(docs)) -> cond do
-          bang -> :get!
-          !bang -> :get
+  def _update(struct, docs \\ [], bang \\ false) do
+    {method, {status, json_docs}} = cond do
+      is_list(docs) and (length(docs) == 0) -> cond do
+          bang -> {:get!, {:ok, []}}
+          !bang -> {:get, {:ok, []}}
         end
-      bang -> :post!
-      true -> :post
+      bang -> {:post!, _decoded(docs)}
+      true -> {:post, _decoded(docs)}
     end
-
-    {status, json_documents} = _decoded(docs)
 
     cond do
       status == :ok -> apply(__MODULE__, method, [build_query(struct), json_docs, [{"Content-type", "application/json"}]])
-      true -> {status, json_documents}
+      true -> {status, json_docs}
     end
   end
   
   def _decoded(docs) do
     cond do
-      is_list(docs) and is_map(hd docs) -> Poison.encode docs
+      is_list(docs) and is_map(hd(docs)) -> Poison.encode docs
       is_binary(docs) -> {:ok, docs}
       true -> {:error, "Unknown solr documents"}
     end
   end
 
-  def update(struct, docs), do: _update(struct, docs, false)
-  def update!(struct, docs), do: _update(struct, docs, true)
-
-  # For direct update commands without solr_docs such as commit, optimize
-  def update(struct), do: get build_query(struct), [], [recv_timeout: 30000]
-  def update!(struct), do: get! build_query(struct), [], [recv_timeout: 30000]
+  def update(struct, docs \\ []), do: _update(struct, docs, false)
+  def update!(struct, docs \\ []), do: _update(struct, docs, true)
 
   @doc """
   Build solr query with `%Elsol.Query{}` structs. See `Elsol.Query` for more details.

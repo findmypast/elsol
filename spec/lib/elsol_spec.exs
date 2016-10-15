@@ -39,27 +39,44 @@ defmodule ElsolSpec do
   defmodule SharedUpdateExample do
 
     use ESpec, shared: true
-    let_overridable [:method, :request_method, :struct]
+    let_overridable [:method, :struct, :expected_get, :expected_post]
 
     before do
-      allow Elsol |> to(accept request_method(), fn(_,_,_) -> "retval" end)
+      allow Elsol |> to(accept expected_post(), fn(_,_,_) -> "posted" end)
+      allow Elsol |> to(accept expected_get(), fn(_,_,_) -> "got" end)
     end
 
-
+    let :expected_url, do: "http://localhost:8983/solr/foo/update?commit=true"
     subject do: apply(Elsol, method(), args())
 
     context "with docs" do
+      let :args, do: [struct(), docs]
       context "doc list" do
         context "head of list is map" do
-          let :args, do: [[%{id: "1", name: "foo"}, %{id: 2, name: "bar"}]]
-          it "should post "
+          let :docs, do: [%{id: "1", name: "foo"}, %{id: 2, name: "bar"}]
+          it "should post" do
+            should eql "posted"
+            {_, json_docs} = Poison.encode(docs)
+            expect Elsol |> to(accepted expected_post(), [expected_url(), json_docs, [{"Content-type", "application/json"}]])
+          end
         end
         context "head of list is wrong type" do
-          # unable to parse solr documents
+          let :docs, do: [1]
+          it "should not post" do
+            subject()
+            expect Elsol |> to_not(accepted expected_post())
+          end
         end
       end
       context "doc string" do
-        let :args, do: ["[{\"id\": \"1\", \"name\": \"foo\"}]"]
+        let :docs do
+          {status, docs} = Poison.encode([%{id: "1", name: "foo"}, %{id: 2, name: "bar"}])
+          docs
+        end
+        it "should pass the doc string correctly" do
+          should eql "posted"
+          expect Elsol |> to(accepted expected_post(), [expected_url(), docs(), [{"Content-type", "application/json"}]])
+        end
       end
     end
 
@@ -85,16 +102,18 @@ defmodule ElsolSpec do
 
     describe "update" do
       let :method, do: :update
-      let :request_method, do: :post
-      let :struct, do: %Elsol.Query.Update{commit: true, collection: %Elsol.Collection{name: "foo"}}
+      let :expected_get, do: :get
+      let :expected_post, do: :post
+      let :struct, do: %Elsol.Query.Update{url: "http://localhost:8983/solr", commit: true, collection: %Elsol.Collection{name: "foo"}}
 
       it_behaves_like SharedUpdateExample
     end
     
     describe "update!" do
       let :method, do: :update!
-      let :request_method, do: :post!
-      let :struct, do: %Elsol.Query.Update{commit: true, collection: %Elsol.Collection{name: "foo"}}
+      let :expected_get, do: :get!
+      let :expected_post, do: :post!
+      let :struct, do: %Elsol.Query.Update{url: "http://localhost:8983/solr", commit: true, collection: %Elsol.Collection{name: "foo"}}
 
       it_behaves_like SharedUpdateExample
     end
