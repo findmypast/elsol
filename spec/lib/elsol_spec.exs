@@ -81,7 +81,11 @@ defmodule ElsolSpec do
     end
 
     context "without docs" do
-
+      let :args, do: [struct()]
+      it "should send a get request to the expected endpoint, with no body" do
+        should eql "got"
+        expect Elsol |> to(accepted expected_get(), [expected_url(), [], [{"Content-type", "application/json"}]])
+      end
     end
 
 
