@@ -83,16 +83,16 @@ defmodule Elsol do
   ... iex doctests to do
 
   """
-  def build_query(%{url: nil} = query_struct) do
-    Application.get_env(:elsol, :url) <> Elsol.Query.build(query_struct)
-  end
-
-  def build_query(%{url: "http://" <> solr_url } = query_struct) do
-     "http://" <> solr_url <> Elsol.Query.build(query_struct)
-  end
-
-  def build_query(%{url: config_key} = query_struct) do
-    Application.get_env(:elsol, String.to_atom config_key) <> Elsol.Query.build(query_struct)
+  def build_query(query_struct) when is_map(query_struct) do
+    url = Map.get(query_struct, :url)
+    full_url = cond do
+      is_bitstring(url) && String.match?(url, ~r/^http(s)?:\/\//) -> url
+      is_bitstring(url) -> "http://"  <> url
+      is_nil(url) -> Application.get_env(:elsol, :url)
+      is_atom(url) -> Application.get_env(:elsol, url)
+      true -> ""  # we must just not have a host?
+    end
+    full_url <> Elsol.Query.build(query_struct)
   end
 
   # decode JSON data for now
