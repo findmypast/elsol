@@ -70,7 +70,7 @@ defmodule ElsolSpec do
       end
       context "doc string" do
         let :docs do
-          {status, docs} = Poison.encode([%{id: "1", name: "foo"}, %{id: 2, name: "bar"}])
+          {_, docs} = Poison.encode([%{id: "1", name: "foo"}, %{id: 2, name: "bar"}])
           docs
         end
         it "should pass the doc string correctly" do
@@ -87,8 +87,17 @@ defmodule ElsolSpec do
         expect Elsol |> to(accepted expected_get(), [expected_url(), [], [{"Content-type", "application/json"}]])
       end
     end
-
-
+  end
+  
+  defmodule SharedBuildQueryExample do
+    use ESpec, shared: true
+    
+    let_overridable [:struct, :subject, :expected_url]
+    
+    it "should build the URL correctly" do
+      should eql expected_url()
+    end
+    
   end
 
   example_group do
@@ -123,4 +132,32 @@ defmodule ElsolSpec do
     end
     
   end
+  
+  describe "build_query" do
+    subject do: Elsol.build_query(struct)
+    
+    context "a struct with a nil url" do
+      let :expected_url, do: "http://localhost:8983/solr/foo/select?q=*:*&wt=json"
+      let :struct, do: %Elsol.Query{q: "*:*", collection: "/foo"}
+      it_behaves_like SharedBuildQueryExample
+    end
+    context "a struct with a valid url" do
+      context "http" do
+        let :struct, do: %Elsol.Query{q: "*:*", collection: "/foo", url: "http://foo.com:8983/solr"}
+        let :expected_url, do: "http://foo.com:8983/solr/foo/select?q=*:*&wt=json"
+        it_behaves_like SharedBuildQueryExample
+      end
+      context "https" do
+        let :struct, do: %Elsol.Query{q: "*:*", collection: "/foo", url: "https://foo.com:8983/solr"}
+        let :expected_url, do: "https://foo.com:8983/solr/foo/select?q=*:*&wt=json"
+        it_behaves_like SharedBuildQueryExample
+      end
+    end
+    context "the URL is a key to an environment config" do
+      let :expected_url, do: "http://localhost:8983/solr/foo/select?q=*:*&wt=json"
+      let :struct, do: %Elsol.Query{q: "*:*", collection: "/foo", url: :url}
+      it_behaves_like SharedBuildQueryExample
+    end
+  end
+  
 end
