@@ -2,18 +2,23 @@ defmodule Elsol do
 
   use HTTPoison.Base
 
-  # When we just want to pass through a whole url and query_string...(no construction of url required)
-  def query(query_arg, timeout \\ 30000), do: _query(query_arg, false, timeout)
-  def query!(query_arg, timeout \\ 30000), do: _query(query_arg, true, timeout)
+  # deprecated
+  def query(query_arg), do: _query(query_arg, false, [], [recv_timeout: 30000])
+  def query!(query_arg), do: _query(query_arg, true, [], [recv_timeout: 30000])
+  def query(query_arg, timeout) when is_integer(timeout), do: _query(query_arg, false, [], [recv_timeout: timeout])
+  def query!(query_arg, timeout) when is_integer(timeout), do: _query(query_arg, true, [], [recv_timeout: timeout])
 
-  def _query(query_arg, bang \\ false, timeout \\ 30000) do
+  def query(query_arg, headers \\ [], options \\ []), do: _query(query_arg, false, headers, options)
+  def query!(query_arg, headers \\ [], options \\ []), do: _query(query_arg, true, headers, options)
+
+  def _query(query_arg, bang \\ false, headers \\ [], options \\ []) do
     meth = cond do
       bang -> :get!
       !bang -> :get
     end
     query_args = cond do
-      is_binary(query_arg) -> [query_arg, [], [recv_timeout: timeout]]
-      true -> [build_query(query_arg), [], [recv_timeout: timeout]]
+      is_binary(query_arg) -> [query_arg, headers, options]
+      true -> [build_query(query_arg), headers, options]
     end
     apply(__MODULE__, meth, query_args)
   end
