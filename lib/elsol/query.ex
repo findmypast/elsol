@@ -27,7 +27,7 @@ defmodule Elsol.Query do
   """
 
   defstruct url: nil, name: "/select", q: nil, fq: nil, start: nil, rows: nil,
-            wt: "json", sort: nil, echoParams: nil, fl: nil, collection: %Elsol.Collection{}
+            wt: "json", tr: nil, sort: nil, echoParams: nil, fl: nil, collection: %Elsol.Collection{}
 
   def build(params) when is_map(params) do
     cond do
