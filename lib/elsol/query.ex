@@ -41,7 +41,7 @@ defmodule Elsol.Query do
   end
 
   def build([head|tail]) do
-    (build(head) <> build(tail)) |> String.rstrip ?&
+    (build(head) <> build(tail)) |> String.rstrip(?&)
   end
 
   def build({k,v}) when is_bitstring(v) or is_integer(v) do
