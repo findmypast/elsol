@@ -31,7 +31,7 @@ defmodule Elsol.Mixfile do
   # Type `mix help deps` for more examples and options
   defp deps do
     [ {:espec, "~> 1.1.0", only: :test},
-      {:httpoison, "~> 0.8.0"},
+      {:httpoison, "~> 0.11.0"},
       {:poison, "~> 1.3"}
     ]
   end
