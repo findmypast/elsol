@@ -48,7 +48,7 @@ defmodule Elsol.Query do
     (Atom.to_string(k) |> String.replace("_","."))  <> "=#{v}&"
   end
 
-  def build({k, v}) when is_boolean(v), do: Atom.to_string(k) <> "=#{v}&"
+  def build({k, v}) when is_boolean(v), do: (Atom.to_string(k) |> String.replace("_",".")) <> "=#{v}&"
 
   def build({k,v}) when is_list(v) and length(v)>0 do
     build({k, hd(v)}) <> build({k, tl(v)})
