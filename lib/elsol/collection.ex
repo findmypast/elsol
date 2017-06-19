@@ -5,7 +5,9 @@ defmodule Elsol.Collection do
     This lets us dynamically handle URL management.
   """
 
-  defstruct name: nil
+  # use 'name' to specify collection/core name, e.g. /solr/name/select?
+  # use 'query' to specify common delimited collections in queries, e.g. select?collection=col1,col2
+  defstruct name: nil, query: nil
 
   @doc """
     Returns either an empty string or /:collection_name.

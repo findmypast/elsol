@@ -35,7 +35,7 @@ defmodule Elsol.Query do
         Elsol.Collection.path(params.collection) # this can be an empty string or /collection_name
         <> params.name
         <> "?"
-        <> build( Map.drop(params, [:url, :name, :collection]) |> Map.to_list )  # query params
+        <> build( Map.drop(params, [:url, :name]) |> Map.to_list )  # query params
       true -> build( Map.to_list(params) )
     end
   end
@@ -54,6 +54,9 @@ defmodule Elsol.Query do
     build({k, hd(v)}) <> build({k, tl(v)})
   end
 
+  def build({:collection, %Elsol.Collection{query: query} = _collection}) when is_bitstring(query), do: "collection=#{query}&"
+
+  def build({:collection, _collection}), do: ""
   def build({:__struct__, _}), do: ""
   def build({_, nil}), do: ""
   def build({_,[]}), do: ""
