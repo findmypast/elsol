@@ -32,7 +32,7 @@ defmodule Elsol.Mixfile do
   defp deps do
     [ {:espec, "~> 1.1.0", only: :test},
       {:httpoison, "~> 0.11.0"},
-      {:poison, "~> 1.3"}
+      {:poison, "~> 1.5"}
     ]
   end
 end
