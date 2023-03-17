@@ -20,8 +20,6 @@ defmodule Elsol do
       is_binary(query_arg) -> [query_arg, headers, options]
       true -> [build_query(query_arg), headers, options]
     end
-    IO.inspect("Calling Solr")
-    IO.inspect(query_arg)
     apply(__MODULE__, meth, query_args)
   end
 
@@ -91,7 +89,6 @@ defmodule Elsol do
 
   """
   def build_query(query_struct) when is_map(query_struct) do
-    IO.inspect("Building query")
     url = Map.get(query_struct, :url)
     full_url = cond do
       is_bitstring(url) && String.match?(url, ~r/^http(s)?:\/\//) -> url
@@ -100,7 +97,7 @@ defmodule Elsol do
       is_atom(url) -> Application.get_env(:elsol, url)
       true -> ""  # we must just not have a host?
     end
-    full_url <> Elsol.Query.build(query_struct) |> IO.inspect
+    full_url <> Elsol.Query.build(query_struct)
   end
 
   # decode JSON data for now
