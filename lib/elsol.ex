@@ -100,7 +100,7 @@ defmodule Elsol do
       is_atom(url) -> Application.get_env(:elsol, url)
       true -> ""  # we must just not have a host?
     end
-    full_url <> Elsol.Query.build(query_struct) |> IO.query
+    full_url <> Elsol.Query.build(query_struct) |> IO.inspect
   end
 
   # decode JSON data for now
