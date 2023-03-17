@@ -37,6 +37,7 @@ defmodule Elsol.Query do
             sort: nil,
             echoParams: nil,
             fl: nil,
+            uf: nil,
             collection: %Elsol.Collection{}
 
   def build(params) when is_map(params) do
